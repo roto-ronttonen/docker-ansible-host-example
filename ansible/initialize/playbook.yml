@@ -109,7 +109,7 @@
         path: "/home/{{ create_user }}/app"
         state: directory
     - name: Init git
-      command: git init
+      command: "chdir=/home/{{ create_user }}/app git init"
     - name: Copy .env
       copy:
         src: ../../.env
