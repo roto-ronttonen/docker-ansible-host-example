@@ -18,4 +18,4 @@ jobs:
             cd ~/app/ # navigate into the folder
             git pull https://${{ secrets.ACCESS_TOKEN }}:x-oauth-basic@github.com/roto-ronttonen/docker-ansible-host-example.git
             sudo docker-compose build app
-            sudo docker-compose up
+            sudo docker-compose up -d
