@@ -104,13 +104,16 @@
         dest: /usr/local/bin/docker-compose
         mode: 'u+x,g+x'
 # Create app folder and copy .env
-    - name: Create app directory
-      file:
-        path: "/home/{{ create_user }}/app"
-        state: directory
-    - name: Init git
-      command: "chdir=/home/{{ create_user }}/app git init"
-    - name: Copy .env
-      copy:
-        src: ../../.env
-        dest: "/home/{{ create_user }}/app"
+    - block:
+      - name: Create app directory
+        file:
+          path: "/home/{{ create_user }}/app"
+          state: directory
+      - name: Init git
+        command: "chdir=/home/{{ create_user }}/app git init"
+      - name: Copy .env
+        copy:
+          src: ../../.env
+          dest: "/home/{{ create_user }}/app"
+      become: yes
+      become_user: "{{ create_user }}"
