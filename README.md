@@ -62,4 +62,4 @@ Required variables:
 - SSH_HOST=<<ip_of_remote>>
 - SSH_USERNAME=ronttonen
 - SSH_KEY=<<ssh_private_key_content>>
-- GITHUB_ACCESS_TOKEN=<<personal_access_token_with_full_control_of_private_repositories>> (https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
+- ACCESS_TOKEN=<<personal_access_token_with_full_control_of_private_repositories>> (https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
