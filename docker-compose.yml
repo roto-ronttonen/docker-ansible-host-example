@@ -64,6 +64,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes: 
       - db-volume:/var/lib/mysql
+    network_mode: bridge
 
   app:
     build: 
@@ -80,6 +81,7 @@ services:
       - nginx-proxy
       - letsencrypt
       - docker-gen
+    network_mode: bridge
 
 
 
