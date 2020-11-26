@@ -16,5 +16,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd ~/app/ # navigate into the folder
-            git pull https://${{ ACCESS_TOKEN }}:x-oauth-basic@github.com/roto-ronttonen/docker-ansible-host-example.git
+            git pull https://${{ secrets.ACCESS_TOKEN }}:x-oauth-basic@github.com/roto-ronttonen/docker-ansible-host-example.git
             sudo docker-compose up -d --no-deps --build app
