@@ -1,0 +1,136 @@
+---
+- hosts: all
+  become: true
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    - name: Install Prerequisites
+      apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+
+# Sudo Group Setup
+    - name: Make sure we have a 'wheel' group
+      group:
+        name: wheel
+        state: present
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+
+# User + Key Setup
+    - name: Create a new regular user with sudo privileges
+      user:
+        name: "{{ create_user }}"
+        state: present
+        groups: wheel
+        append: true
+        create_home: true
+        shell: /bin/bash
+
+    - name: Set authorized key for remote user
+      authorized_key:
+        user: "{{ create_user }}"
+        state: present
+        key: "{{ copy_local_key }}"
+
+    - name: Disable password authentication for root
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin prohibit-password'
+
+# Install Packages
+    - name: Update apt
+      apt: update_cache=yes
+
+    - name: Install required system packages
+      apt: name={{ sys_packages }} state=latest
+
+# UFW Setup
+    - name: UFW - Allow SSH connections
+      ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: Allow all access to tcp port 80
+      ufw:
+        rule: allow
+        port: 80
+        proto: tcp
+        
+    - name: Allow all access to tcp port 443
+      ufw:
+        rule: allow
+        port: 443
+        proto: tcp
+
+    - name: Allow all access to tcp port 2376
+      ufw:
+        rule: allow
+        port: 2376
+        proto: tcp
+
+    - name: Allow all access to tcp port 2377
+      ufw:
+        rule: allow
+        port: 2377
+        proto: tcp
+
+    - name: Allow all access to tcp port 7946
+      ufw:
+        rule: allow
+        port: 7946
+        proto: tcp
+
+    - name: Allow all access to udp port 7946
+      ufw:
+        rule: allow
+        port: 7946
+        proto: udp
+
+    - name: Allow all access to udp port 4789
+      ufw:
+        rule: allow
+        port: 4789
+        proto: udp
+
+
+    - name: UFW - Deny all other incoming traffic by default
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+# Docker setup
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    - name: Install docker-compose
+      get_url: 
+        url : https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: 'u+x,g+x'

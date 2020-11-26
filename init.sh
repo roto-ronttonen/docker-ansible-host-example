@@ -1,0 +1,1 @@
+ansible-playbook ansible/initialize/playbook.yml -l target-server -u root -i ansible/initialize/inventory
