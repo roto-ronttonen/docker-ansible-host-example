@@ -1,5 +1,5 @@
 [servers]
-target_server ansible_host=<<IP_ADDRESS_OF_SERVER_TO_USE>>
+target_server ansible_host=95.217.216.96
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3

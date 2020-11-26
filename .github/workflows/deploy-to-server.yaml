@@ -1,0 +1,20 @@
+name: Deploy application
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy app
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/app/ # navigate into the folder
+            git pull https://${{ GITHUB_ACCESS_TOKEN }}:x-oauth-basic@github.com/roto-ronttonen/docker-ansible-host-example.git
+            sudo docker-compose up -d --no-deps --build app

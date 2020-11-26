@@ -70,8 +70,6 @@ services:
       context: ./app
       dockerfile: Dockerfile
     container_name: app
-    ports: 
-      - 8000:8000
     restart: always
     environment: 
       - VIRTUAL_HOST=${APP_VIRTUAL_HOST}

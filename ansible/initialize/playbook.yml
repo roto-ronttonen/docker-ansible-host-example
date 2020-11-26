@@ -70,37 +70,6 @@
         port: 443
         proto: tcp
 
-    - name: Allow all access to tcp port 2376
-      ufw:
-        rule: allow
-        port: 2376
-        proto: tcp
-
-    - name: Allow all access to tcp port 2377
-      ufw:
-        rule: allow
-        port: 2377
-        proto: tcp
-
-    - name: Allow all access to tcp port 7946
-      ufw:
-        rule: allow
-        port: 7946
-        proto: tcp
-
-    - name: Allow all access to udp port 7946
-      ufw:
-        rule: allow
-        port: 7946
-        proto: udp
-
-    - name: Allow all access to udp port 4789
-      ufw:
-        rule: allow
-        port: 4789
-        proto: udp
-
-
     - name: UFW - Deny all other incoming traffic by default
       ufw:
         state: enabled
@@ -134,3 +103,14 @@
         url : https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
         mode: 'u+x,g+x'
+# Create app folder and copy .env
+    - name: Create app directory
+      file:
+        path: "/home/{{ create_user }}/app"
+        state: directory
+    - name: Init git
+      command: git init
+    - name: Copy .env
+      copy:
+        src: ../../.env
+        dest: "/home/{{ create_user }}/app"

@@ -44,6 +44,8 @@ Replace `ronttonen` with desired username
 
 ### Initialize server
 
+Create a local .env file based on .env.example in root of project.
+
 Run command:
 
 `./init.sh`
@@ -52,9 +54,12 @@ If command is not executable first run
 
 `sudo chmod +x init.sh`
 
-### Set enviroment variables in target
-
 ### Set variables in github actions
 
-TODO Add instructions
+https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
 
+Required variables:
+- SSH_HOST=<<ip_of_remote>>
+- SSH_USERNAME=ronttonen
+- SSH_KEY=<<ssh_private_key_content>>
+- GITHUB_ACCESS_TOKEN=<<personal_access_token_with_full_control_of_private_repositories>> (https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
